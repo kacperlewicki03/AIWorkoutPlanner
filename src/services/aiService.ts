@@ -1,7 +1,7 @@
 import axios from "axios";
 import { UserProfile, WorkoutFeedback } from "../types/workout";
 
-const GEMINI_API_KEY = "AIzaSyBkVh7SnbCBkzLIghF7kFeY7UEOycTLgrY";
+const GEMINI_API_KEY = "";
 const BASE_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 

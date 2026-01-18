@@ -15,11 +15,9 @@ export default function FeedbackModal() {
   const [comment, setComment] = useState("");
 
   const submitFeedback = async () => {
-    // 1. Pobierz obecną historię
     const historyRaw = await AsyncStorage.getItem("workoutHistory");
     const history = historyRaw ? JSON.parse(historyRaw) : [];
 
-    // 2. Dodaj nową ocenę
     const newEntry = {
       date: new Date().toISOString(),
       rating,
@@ -28,13 +26,12 @@ export default function FeedbackModal() {
 
     await AsyncStorage.setItem(
       "workoutHistory",
-      JSON.stringify([...history, newEntry])
+      JSON.stringify([...history, newEntry]),
     );
 
-    // 3. Usuń aktualny plan (żeby jutro wygenerować nowy)
     await AsyncStorage.removeItem("currentWorkout");
 
-    router.back(); // Zamknij modal i wróć do (tabs)
+    router.back();
   };
 
   return (

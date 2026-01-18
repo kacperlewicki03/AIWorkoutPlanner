@@ -18,11 +18,11 @@ export default function OnboardingScreen() {
     const profile = {
       level,
       goal,
-      equipment: ["dumbbells", "bodyweight"], // Uproszczone dla przykładu
+      equipment: ["dumbbells", "bodyweight"],
       isFirstRun: false,
     };
     await AsyncStorage.setItem("userProfile", JSON.stringify(profile));
-    router.replace("/(tabs)"); // Przekierowanie do głównej apki
+    router.replace("/(tabs)");
   };
 
   return (
@@ -31,7 +31,7 @@ export default function OnboardingScreen() {
 
       <Text style={styles.label}>Twój poziom stażu:</Text>
       <View style={styles.row}>
-        {["beginner", "intermediate", "advanced"].map((l) => (
+        {["początkujący", "średniozaawansowany", "zaawansowany"].map((l) => (
           <TouchableOpacity
             key={l}
             style={[styles.chip, level === l && styles.activeChip]}
@@ -43,15 +43,17 @@ export default function OnboardingScreen() {
       </View>
 
       <Text style={styles.label}>Twój cel:</Text>
-      {["muscle_gain", "fat_loss", "strength"].map((g) => (
-        <TouchableOpacity
-          key={g}
-          style={[styles.option, goal === g && styles.activeOption]}
-          onPress={() => setGoal(g)}
-        >
-          <Text>{g.replace("_", " ")}</Text>
-        </TouchableOpacity>
-      ))}
+      {["budowa masy mięśniowej", "redukcja tłuszczu", "budowa siły"].map(
+        (g) => (
+          <TouchableOpacity
+            key={g}
+            style={[styles.option, goal === g && styles.activeOption]}
+            onPress={() => setGoal(g)}
+          >
+            <Text>{g.replace("_", " ")}</Text>
+          </TouchableOpacity>
+        ),
+      )}
 
       <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
         <Text style={styles.saveButtonText}>Zacznij Trenować</Text>
@@ -64,14 +66,20 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 25, backgroundColor: "#fff" },
   title: { fontSize: 28, fontWeight: "bold", marginVertical: 40 },
   label: { fontSize: 16, fontWeight: "600", marginBottom: 10, marginTop: 20 },
-  row: { flexDirection: "row", justifyContent: "space-between" },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+  },
   chip: {
     padding: 10,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#ddd",
-    width: "30%",
+    width: "45%",
     alignItems: "center",
+    flexGrow: 1,
+    margin: 10,
   },
   activeChip: { backgroundColor: "#007AFF", borderColor: "#007AFF" },
   activeText: { color: "white" },

@@ -1,13 +1,13 @@
 import axios from "axios";
 import { UserProfile, WorkoutFeedback } from "../types/workout";
 
-const GEMINI_API_KEY = "AIzaSyBkVh7SnbCBkzLIghF7kFeY7UEOycTLgrY";
+const GEMINI_API_KEY = "AIzaSyA9qB7mcbD0Xb7-wA6AgOmH2eAf5QnqdUg";
 const BASE_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 export const generateAIWorkout = async (
   profile: UserProfile,
-  history: WorkoutFeedback[]
+  history: WorkoutFeedback[],
 ) => {
   const historyContext =
     history.length > 0
@@ -19,8 +19,8 @@ export const generateAIWorkout = async (
   const promptText = `
     Jesteś trenerem fitness. Wygeneruj plan treningowy w formacie JSON.
     Użytkownik: Poziom ${profile.level}, Cel: ${
-    profile.goal
-  }, Sprzęt: ${profile.equipment.join(", ")}.
+      profile.goal
+    }, Sprzęt: ${profile.equipment.join(", ")}.
     Historia: ${historyContext}
 
     Zasady:
@@ -46,7 +46,7 @@ export const generateAIWorkout = async (
           "Content-Type": "application/json",
           "x-goog-api-key": GEMINI_API_KEY,
         },
-      }
+      },
     );
 
     if (
@@ -61,7 +61,7 @@ export const generateAIWorkout = async (
   } catch (error: any) {
     console.error(
       "Błąd zapytania do Gemini:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     return null;
   }

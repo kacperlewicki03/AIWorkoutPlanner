@@ -1,15 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { generateAIWorkout } from "../../src/services/aiService";
+import { storageService } from "../../src/services/storage";
 import { WorkoutPlan } from "../../src/types/workout";
 
 export default function HomeScreen() {
@@ -17,46 +19,49 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [workout, setWorkout] = useState<WorkoutPlan | null>(null);
 
-  const checkAppData = React.useCallback(async () => {
-    const profile = await AsyncStorage.getItem("userProfile");
+  const checkAppData = useCallback(async () => {
+    const profile = await storageService.getProfile();
+
     if (!profile) {
       router.replace("/onboarding");
       return;
     }
 
-    const savedWorkout = await AsyncStorage.getItem("currentWorkout");
-    if (savedWorkout) {
-      setWorkout(JSON.parse(savedWorkout));
-    } else {
-      setWorkout(null);
-    }
+    const savedWorkout = await storageService.getCurrentWorkout();
+    setWorkout(savedWorkout);
   }, [router]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       checkAppData();
-    }, [checkAppData])
+    }, [checkAppData]),
   );
 
   const handleGenerateWorkout = async () => {
     setLoading(true);
     try {
-      const profile = JSON.parse(
-        (await AsyncStorage.getItem("userProfile")) || "{}"
-      );
-      const history = JSON.parse(
-        (await AsyncStorage.getItem("workoutHistory")) || "[]"
-      );
+      const profile = await storageService.getProfile();
+      const history = await storageService.getHistory();
 
-      // Wywołanie naszej usługi AI (Prompt Engineering)
+      if (!profile) {
+        Alert.alert("Błąd", "Brak profilu użytkownika.");
+        return;
+      }
+
       const newPlan = await generateAIWorkout(profile, history);
 
       if (newPlan) {
-        await AsyncStorage.setItem("currentWorkout", JSON.stringify(newPlan));
+        await storageService.saveCurrentWorkout(newPlan);
         setWorkout(newPlan);
+      } else {
+        Alert.alert(
+          "Błąd",
+          "Nie udało się wygenerować planu. Spróbuj ponownie.",
+        );
       }
     } catch (error) {
       console.error("Błąd generowania:", error);
+      Alert.alert("Błąd", "Wystąpił nieoczekiwany problem.");
     } finally {
       setLoading(false);
     }
@@ -97,10 +102,10 @@ export default function HomeScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={styles.exerciseName}>{item.name}</Text>
                   <Text style={styles.exerciseDetails}>
-                    {item.sets} x {item.reps}
+                    {item.sets} serie x {item.reps}
                   </Text>
                 </View>
-                <Text style={styles.aiNote}>💡 {item.note}</Text>
+                {item.note && <Text style={styles.aiNote}>💡 {item.note}</Text>}
               </View>
             )}
             ListFooterComponent={

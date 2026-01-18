@@ -1,5 +1,5 @@
 export interface UserProfile {
-  level: "beginner" | "intermediate" | "advanced";
+  level: "początkujący" | "średniozaawansowany" | "zaawansowany";
   goal: string;
   equipment: string[];
 }
@@ -19,6 +19,6 @@ export interface WorkoutPlan {
 }
 
 export interface WorkoutFeedback {
-  rating: number; // 1-5
+  rating: number;
   comment: string;
 }

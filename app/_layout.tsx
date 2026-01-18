@@ -15,7 +15,6 @@ export default function RootLayout() {
     setIsFirstTime(profile === null);
   };
 
-  // Czekaj na sprawdzenie danych w pamięci
   if (isFirstTime === null) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -26,13 +25,10 @@ export default function RootLayout() {
 
   return (
     <Stack>
-      {/* Jeśli to pierwszy raz, onboarding jest ekranem startowym */}
       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
 
-      {/* Główne zakładki */}
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-      {/* Modal jako okno wyskakujące */}
       <Stack.Screen
         name="modal"
         options={{
